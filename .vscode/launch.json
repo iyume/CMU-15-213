@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Lab0: qtest",
+            "program": "${workspaceFolder}/0cprogramminglab/qtest",
+            "args": [
+                "-f",
+                "${workspaceFolder}/0cprogramminglab/traces/trace-03-ops.cmd"
+            ],
+            "cwd": "${workspaceFolder}/0cprogramminglab",
+            "preLaunchTask": "lab0 make"
+        }
+    ]
+}
