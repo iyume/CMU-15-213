@@ -29,7 +29,7 @@ queue_t *queue_new(void) {
     if (!q) {
         return NULL;
     }
-    q->head = q->tail = NULL; // necessary in C, but not C++
+    q->head = q->tail = NULL;
     q->size = 0;
     return q;
 }
@@ -52,7 +52,7 @@ void queue_free(queue_t *q) {
         curr = next;
     }
     free(q);
-    q = NULL; // necessary
+    q = NULL;
 }
 
 /**
