@@ -10,6 +10,14 @@
             "options": {
                 "cwd": "${workspaceFolder}/0cprogramminglab"
             }
+        },
+        {
+            "label": "lab1 make",
+            "type": "shell",
+            "command": "make",
+            "options": {
+                "cwd": "${workspaceFolder}/1datalab"
+            }
         }
     ]
 }

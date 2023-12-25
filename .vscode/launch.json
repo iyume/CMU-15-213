@@ -11,6 +11,18 @@
             ],
             "cwd": "${workspaceFolder}/0cprogramminglab",
             "preLaunchTask": "lab0 make"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Lab1: btest",
+            "program": "${workspaceFolder}/1datalab/btest",
+            "args": [
+                "-f",
+                "trueFiveEighths"
+            ],
+            "cwd": "${workspaceFolder}/1datalab",
+            "preLaunchTask": "lab1 make"
         }
     ]
 }

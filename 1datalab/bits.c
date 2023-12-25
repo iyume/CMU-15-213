@@ -142,7 +142,7 @@ extern int printf(const char *, ...);
  *   Rating: 2
  */
 long implication(long x, long y) {
-    return 2L;
+    return (!x) | y;
 }
 /*
  * leastBitPos - return a mask that marks the position of the
@@ -153,7 +153,8 @@ long implication(long x, long y) {
  *   Rating: 2
  */
 long leastBitPos(long x) {
-    return 2;
+    // 0100 -> 1011 + 1 -> 1100 & 0100 = 0100
+    return x & (~x + 1);
 }
 /*
  * distinctNegation - returns 1 if x != -x.
@@ -163,7 +164,9 @@ long leastBitPos(long x) {
  *   Rating: 2
  */
 long distinctNegation(long x) {
-    return 2;
+    // x == -x when x == 0 or TMin
+    // 0100(4) ^ 1100(-4) -> 1000 -> 1
+    return !!(x ^ (~x + 1));
 }
 /*
  * fitsBits - return 1 if x can be represented as an
@@ -175,7 +178,13 @@ long distinctNegation(long x) {
  *   Rating: 2
  */
 long fitsBits(long x, long n) {
-    return 2L;
+    // n is the signed width, given n=3 equals to [-4,3] [100,011]
+    // 00000011 -> 011 (shift right) -> 00000011
+    // 00000111 -> 111 (shift right) -> 11111111
+    // 11111100 -> 100 (shift right) -> 11111100
+    // 11111000 -> 000 (shift right) -> 00000000
+    long shift = 64 + (~n + 1); // substraction is disallowed
+    return !(x ^ ((x << shift) >> shift));
 }
 // 3
 /*
@@ -190,7 +199,27 @@ long fitsBits(long x, long n) {
  *  Rating: 4
  */
 long trueFiveEighths(long x) {
-    return 2L;
+    // 11(00001011) (*5) ->  55(00110111) (/8) ->  6.8  6(00000110)
+    // -9(11110111) (*5) -> -45(11010011) (/8) -> -5.6 -5(11111011)
+    // long sign = x >> 63 << 63;
+    // long positive_mask = ~(1L << 63);
+    // 5/8 = 1/2 + 1/8
+    // long half = (x + (1 << 1) - 1) >> 1;
+    // long quarter = (x + (1 << 3) - 1) >> 3;
+    // long sign = x >> 63 << 63;
+    // long result = (half + quarter + !(x >> 63));
+    // long result_unsigned = (result & ~(1L << 63));
+    // return result_unsigned | sign;
+    // TODO: fix 22 oper to <20
+    long sign_mask = (x >> 63) ^ ((long)!(x ^ (~x + 1)) << 63 >> 63);
+    long positive = (x + sign_mask) ^ sign_mask; // remove sign
+    long x_stem = positive >> 3;
+    long x_last_three = positive & 0b111;
+    long res_stem = (x_stem << 2) + x_stem; // x_stem * 4 + 1
+    long res_remains = (x_last_three << 2) + x_last_three;
+    long res = res_stem + (res_remains >> 3);
+    res = (res ^ sign_mask) + (~sign_mask + 1); // add sign
+    return res;
 }
 /*
  * addOK - Determine if can compute x+y without overflow
